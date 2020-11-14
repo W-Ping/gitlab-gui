@@ -15,7 +15,7 @@ public class PropertiesUtil {
 
 
     /**
-     * @param filePath
+     * @param fileName
      * @param tClass
      * @param <T>
      * @return

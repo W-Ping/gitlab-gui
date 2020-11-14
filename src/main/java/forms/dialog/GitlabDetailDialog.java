@@ -17,7 +17,7 @@ import java.awt.event.ActionEvent;
 public class GitlabDetailDialog extends JDialog {
 
     public GitlabDetailDialog(Component parentComponent, GitlabDetailInfo gitlabDetailInfo) {
-        super(SwingUtilities.windowForComponent(parentComponent), gitlabDetailInfo.getProject().getName() + " 详情");
+        super((Frame) SwingUtilities.windowForComponent(parentComponent), gitlabDetailInfo.getProject().getName() + " 详情",true);
         Project project = gitlabDetailInfo.getProject();
         this.setResizable(false);
         Font helvetica = new Font("Helvetica", Font.BOLD, 12);
@@ -92,7 +92,6 @@ public class GitlabDetailDialog extends JDialog {
         add(commonJPanel);
         setMinimumSize(new Dimension(450, 280));
         pack();
-        setModal(true);
         setLocationRelativeTo(null);
         setVisible(true);
     }

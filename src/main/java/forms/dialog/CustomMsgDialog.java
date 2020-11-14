@@ -59,10 +59,10 @@ public class CustomMsgDialog extends JDialog implements WindowListener {
         JLabel label = new JLabel(message, JLabel.CENTER);
         CommonJPanel panel = new CommonJPanel(new BorderLayout());
         panel.add(label, BorderLayout.SOUTH);
-        panel.setBackground(label.getBackground());
+        panel.setBackground(Color.LIGHT_GRAY);
         CommonJPanel panel2 = new CommonJPanel(new BorderLayout());
         panel2.add(reqTimeTxt = new JLabel("", JLabel.CENTER), BorderLayout.NORTH);
-        panel2.setBackground(label.getBackground());
+        panel2.setBackground(Color.LIGHT_GRAY);
         Box box = Box.createVerticalBox();
         box.add(panel);
         box.add(panel2);
