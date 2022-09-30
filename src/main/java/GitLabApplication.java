@@ -1,3 +1,4 @@
+import config.CommonConstants;
 import forms.GitLabFrame;
 
 /**
@@ -11,7 +12,7 @@ public class GitLabApplication {
      */
     public static void main(String[] args) {
 
-        GitLabFrame gitLabFrame = new GitLabFrame("GitLab管理");
+        GitLabFrame gitLabFrame = new GitLabFrame("GitLab管理", CommonConstants.SYS_ICON);
         gitLabFrame.init();
     }
 

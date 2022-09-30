@@ -29,5 +29,5 @@ public class CommonConstants {
     public static LoginInfo GLOBE_LOGIN_INFO = null;
 
     public static final Font DEFAULT_FONT = new Font("Helvetica", Font.PLAIN, 12);
-
+    public final static String SYS_ICON = "images/Gitlab.png";
 }

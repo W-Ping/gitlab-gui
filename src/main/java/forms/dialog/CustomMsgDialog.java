@@ -1,5 +1,6 @@
 package forms.dialog;
 
+import config.CommonConstants;
 import forms.dialog.event.AbstractCustomMsgDialogEvent;
 import forms.dialog.event.EventEnum;
 import forms.panel.CommonJPanel;
@@ -67,6 +68,7 @@ public class CustomMsgDialog extends JDialog implements WindowListener {
         box.add(panel);
         box.add(panel2);
         this.setContentPane(box);
+        this.setIconImage(Toolkit.getDefaultToolkit().getImage(ClassLoader.getSystemResource(CommonConstants.SYS_ICON)));
         this.setVisible(true);
 
     }

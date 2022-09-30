@@ -1,6 +1,7 @@
 package forms.dialog;
 
 import actions.LoginAction;
+import config.CommonConstants;
 import exception.GitLabGuiException;
 import forms.panel.CommonJPanel;
 import org.apache.commons.lang3.StringUtils;
@@ -28,6 +29,7 @@ public class LoginDialog extends JDialog {
         super((Frame) SwingUtilities.windowForComponent(parentComponent), "Gitlab管理登录", true);
         this.parentComponent = parentComponent;
         this.setResizable(false);
+        this.setIconImage(Toolkit.getDefaultToolkit().getImage(ClassLoader.getSystemResource(CommonConstants.SYS_ICON)));
         Font font = new Font("宋体", Font.BOLD, 13);
         Dimension labDim = new Dimension(90, 20);
         Dimension inputDim = new Dimension(230, 30);

@@ -30,10 +30,11 @@ import java.awt.event.WindowEvent;
 public class GitLabFrame extends JFrame {
     private static final Logger log = LoggerFactory.getLogger(GitlabBranchesDialog.class);
 
-    public GitLabFrame(String title) {
+    public GitLabFrame(String title,String icon) {
         super(title);
         setLayout(new BorderLayout());
         setMinimumSize(new Dimension(600, 500));
+        this.setIconImage(Toolkit.getDefaultToolkit().getImage(ClassLoader.getSystemResource(icon)));
     }
 
     public void init() {

@@ -4,6 +4,7 @@ import layout.VerticalFlowLayout;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.image.BufferedImage;
 
 /**
  * @author liu_wp
@@ -18,6 +19,8 @@ public class CommonJPanel extends JPanel {
     public CommonJPanel(LayoutManager mgr) {
         setLayout(mgr);
     }
+
+    private BufferedImage image;
 
     public CommonJPanel(LayoutManager layoutManager, JComponent... jComponent) {
         super(layoutManager);
@@ -44,5 +47,14 @@ public class CommonJPanel extends JPanel {
             add(jComponent[i], i);
         }
         this.setLayout(new FlowLayout(align));
+    }
+
+    @Override
+
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        if (image != null) {
+            g.drawImage(image, 0, 0, this);
+        }
     }
 }

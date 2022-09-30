@@ -32,6 +32,7 @@ public class GitlabBranchesDialog extends JDialog {
      */
     public GitlabBranchesDialog(Component parentComponent, GitlabDetailInfo gitlabDetailInfo) {
         super((Frame) SwingUtilities.windowForComponent(parentComponent), gitlabDetailInfo.getProject().getName() + " 分支详情", true);
+        this.setIconImage(Toolkit.getDefaultToolkit().getImage(ClassLoader.getSystemResource(CommonConstants.SYS_ICON)));
         Box box = Box.createVerticalBox();
         Project project = gitlabDetailInfo.getProject();
         List<Branch> branches = gitlabDetailInfo.getBranches();

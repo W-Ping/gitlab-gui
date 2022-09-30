@@ -1,5 +1,6 @@
 package forms.dialog;
 
+import config.CommonConstants;
 import forms.panel.CommonJPanel;
 import org.gitlab4j.api.models.Project;
 import pojo.GitlabDetailInfo;
@@ -20,6 +21,7 @@ public class GitlabDetailDialog extends JDialog {
         super((Frame) SwingUtilities.windowForComponent(parentComponent), gitlabDetailInfo.getProject().getName() + " 详情",true);
         Project project = gitlabDetailInfo.getProject();
         this.setResizable(false);
+        this.setIconImage(Toolkit.getDefaultToolkit().getImage(ClassLoader.getSystemResource(CommonConstants.SYS_ICON)));
         Font helvetica = new Font("Helvetica", Font.BOLD, 12);
         CommonJPanel cj1 = new CommonJPanel();
         JLabel lab1 = new JLabel("项目名称：");

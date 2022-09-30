@@ -1,6 +1,7 @@
 package forms.dialog;
 
 import config.AccountActionType;
+import config.CommonConstants;
 import forms.panel.CommonJPanel;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -46,6 +47,7 @@ public class GitLabConfigDialog extends JDialog {
         this.setMinimumSize(new Dimension(300, 200));
         this.setContentPane(new CommonJPanel(new FlowLayout(FlowLayout.CENTER), box));
         this.setResizable(false);
+        this.setIconImage(Toolkit.getDefaultToolkit().getImage(ClassLoader.getSystemResource(CommonConstants.SYS_ICON)));
         pack();
         GitLabConfigDialog configDialog = this;
         testBtn.addActionListener(e -> {
