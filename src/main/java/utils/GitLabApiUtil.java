@@ -1,6 +1,7 @@
 package utils;
 
 import config.CommonConstants;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.gitlab4j.api.GitLabApi;
 import org.gitlab4j.api.GitLabApiException;
@@ -25,8 +26,16 @@ public class GitLabApiUtil {
         gitLabApiReq = gitLabApi;
     }
 
-    public static LoginInfo getDefaultLogin() {
-        return PropertiesUtil.getPropertyObject(CommonConstants.LOGIN_FILE, LoginInfo.class);
+    public static synchronized LoginInfo getDefaultLogin() {
+        final LoginInfo loginInfo = CommonConstants.GLOBE_LOGIN_INFO;
+        if (loginInfo != null) {
+            return loginInfo;
+        }
+        final List<LoginInfo> loginInfos = SQLiteUtil.select(new LoginInfo());
+        if (CollectionUtils.isEmpty(loginInfos)) {
+            return CommonConstants.GLOBE_LOGIN_INFO = new LoginInfo();
+        }
+        return CommonConstants.GLOBE_LOGIN_INFO = loginInfos.get(0);
     }
 
     /**

@@ -6,18 +6,18 @@ package forms.table;
  * @see
  */
 public class TableRow {
-    private Integer id;
+    private Long id;
     private String name;
     private String description;
     private String httpUrlToRepo;
     private String lastActivityAt;
     private String defaultBranch;
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(final Integer id) {
+    public void setId(final Long id) {
         this.id = id;
     }
 

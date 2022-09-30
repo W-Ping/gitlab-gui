@@ -11,13 +11,14 @@ import java.awt.*;
  * @date 2020/11/6
  * @see
  */
+@Deprecated
 public class TableCustomButton extends JButton {
     private String id;
     private TableRow tableRow;
     private BasePanel bindPanel;
 
     public TableCustomButton(String id, String text, BasePanel bindPanel) {
-        this(id, text, new Dimension(90, 25), bindPanel);
+        this(id, text, new Dimension(88, 25), bindPanel);
     }
 
     public TableCustomButton(String id, String text, Dimension dimension, BasePanel bindPanel) {

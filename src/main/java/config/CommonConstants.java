@@ -1,5 +1,9 @@
 package config;
 
+import pojo.LoginInfo;
+
+import java.awt.*;
+
 /**
  * @author liu_wp
  * @date 2020/11/3
@@ -14,6 +18,16 @@ public class CommonConstants {
 
     public final static String HEADER_PRIVATE_TOKEN = "PRIVATE-TOKEN";
     public final static String HEADER_PRIVATE_TOKEN_VALUE = "-Senny8xHrkhwmA-_3qU";
-    public final static String GITLAB_HOST = "http://gitlab.iris.com";
+    public final static String GITLAB_HOST = "https://git.snd00.com/";
+    public static final String SQLITE_DEFAULT_DB = "gitlab";
+
+    public static final String SQLITE_DEFAULT_NAME = "gitlab_sb";
+    public static final String SQLITE_DEFAULT_PWD = "gitlab_sb@";
+    /**
+     * 全局登录用户
+     */
+    public static LoginInfo GLOBE_LOGIN_INFO = null;
+
+    public static final Font DEFAULT_FONT = new Font("Helvetica", Font.PLAIN, 12);
 
 }

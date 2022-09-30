@@ -31,6 +31,10 @@ public class LoginAction extends AbstractAction {
             MessageDialogUtil.showModalDialog("【" + loginInfo.getLoginName() + "】登录中...", loginDialog, loginService);
             ResponseResult handleResult = loginService.getHandleResult();
             if (!ResponseResult.isSuccess(handleResult)) {
+                final Object object = handleResult.getObject();
+                if (object instanceof LoginInfo) {
+                    loginInfo.setId(((LoginInfo) object).getId());
+                }
                 JOptionPane.showMessageDialog(loginDialog, handleResult.getMessage(), "错误 ", 0);
             } else {
                 loginDialog.dispose();

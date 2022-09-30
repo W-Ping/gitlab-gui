@@ -5,6 +5,7 @@ import forms.panel.DeleteBranchPanel;
 import forms.panel.RightPanel;
 import forms.table.AbstractCustomCellEditor;
 import forms.table.CustomTable;
+import forms.table.TableLabel;
 import forms.table.TableRow;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -13,8 +14,8 @@ import utils.GitLabApiUtil;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,68 +24,51 @@ import java.util.Optional;
  * @date 2020/11/4
  * @see
  */
-public class CustomButtonCellCellEditor extends AbstractCustomCellEditor<TableCustomButton> {
+public class CustomButtonCellCellEditor extends AbstractCustomCellEditor<TableLabel> {
 
     private TableRow tableRow;
 
     /**
      * @param cellName
-     * @param buttonText
+     * @param tableCustomButtons
      */
-    public CustomButtonCellCellEditor(String cellName, List<TableCustomButton> tableCustomButtons) {
+    public CustomButtonCellCellEditor(String cellName, List<TableLabel> tableCustomButtons) {
         super(cellName, tableCustomButtons);
         bindClick();
     }
 
     protected void bindClick() {
-        for (int i = 0; i < components.size(); i++) {
-            TableCustomButton tableCustomButton = components.get(i);
-            tableCustomButton.setTableRow(tableRow);
-            RightPanel showPanel = (RightPanel) (bindPanel = tableCustomButton.getBindPanel());
-            if ("deleteHotfix".equals(tableCustomButton.getId())) {
-                tableCustomButton.addActionListener(new ActionListener() {
+        for (TableLabel tableLabel : components) {
+            tableLabel.setTableRow(tableRow);
+            RightPanel showPanel = (RightPanel) (bindPanel = tableLabel.getBindPanel());
+            if ("deleteHotfix".equals(tableLabel.getId())) {
+                tableLabel.addMouseListener(new MouseAdapter() {
                     @Override
-                    public void actionPerformed(final ActionEvent e) {
-                        if (StringUtils.isBlank(tableRow.getDefaultBranch())) {
-                            JOptionPane.showMessageDialog(null, "【" + tableRow.getName() + "】主分支不存在！", "错误 ", 0);
-                            return;
-                        }
+                    public void mousePressed(MouseEvent e) {
+                        List<Branch> branches = GitLabApiUtil.getBranchByProjectId(tableRow.getId().toString());
+                        if (!extracted(branches)) return;
                         DeleteBranchPanel deleteBranchPanel = showPanel.getDeleteBranchPanel();
-                        deleteBranchPanel.setBranchComboBoxItemsWithApi(tableRow.getId().toString());
+                        deleteBranchPanel.setBranchComboBoxItems(branches);
                         deleteBranchPanel.setTableRow(tableRow);
                         deleteBranchPanel.setTitle(tableRow.getName());
-                        deleteBranchPanel.setDesc(Optional.ofNullable(tableRow.getDescription()).orElse("").toString());
+                        deleteBranchPanel.setDesc(Optional.ofNullable(tableRow.getDescription()).orElse(""));
                         deleteBranchPanel.setVisible(true);
                         showRightPanel(showPanel);
                         fireEditingStopped();
                     }
                 });
-            } else if ("createHotfix".equals(tableCustomButton.getId())) {
-                tableCustomButton.addActionListener(new ActionListener() {
+            } else if ("createHotfix".equals(tableLabel.getId())) {
+                tableLabel.addMouseListener(new MouseAdapter() {
                     @Override
-                    public void actionPerformed(final ActionEvent e) {
-                        if (StringUtils.isBlank(tableRow.getDefaultBranch())) {
-                            JOptionPane.showMessageDialog(null, "【" + tableRow.getName() + "】主分支不存在！", "错误 ", 0);
-                            return;
-                        }
+                    public void mousePressed(MouseEvent e) {
                         List<Branch> branches = GitLabApiUtil.getBranchByProjectId(tableRow.getId().toString());
-                        if (CollectionUtils.isNotEmpty(branches)) {
-                            String hotfixBc = null;
-                            Object[] bArr = new Object[branches.size()];
-                            for (int i = 0; i < branches.size(); i++) {
-                                Branch branch = branches.get(i);
-                                bArr[i] = branch.getName();
-                                if (branch.getName().toLowerCase().startsWith("hotfix")) {
-                                    hotfixBc = branch.getName();
-                                }
-                            }
-                            CreateBranchPanel createBranchPanel = showPanel.getCreateBranchPanel();
-                            createBranchPanel.setBranchComboBoxItems(bArr);
-                            createBranchPanel.setTitle(tableRow.getName());
-                            createBranchPanel.setDesc(Optional.ofNullable(tableRow.getDescription()).orElse("").toString());
-                            createBranchPanel.setHotFixText(hotfixBc);
-                            createBranchPanel.setTableRow(tableRow);
-                        }
+                        if (!extracted(branches)) return;
+                        CreateBranchPanel createBranchPanel = showPanel.getCreateBranchPanel();
+                        createBranchPanel.setBranchComboBoxItems(branches);
+                        createBranchPanel.setTitle(tableRow.getName());
+                        createBranchPanel.setDesc(Optional.ofNullable(tableRow.getDescription()).orElse(""));
+                        createBranchPanel.setHotFixText(null);
+                        createBranchPanel.setTableRow(tableRow);
                         showRightPanel(showPanel);
                         fireEditingStopped();
                     }
@@ -92,6 +76,18 @@ public class CustomButtonCellCellEditor extends AbstractCustomCellEditor<TableCu
             }
 
         }
+    }
+
+    private boolean extracted(List<Branch> branches) {
+        if (StringUtils.isBlank(tableRow.getDefaultBranch())) {
+            JOptionPane.showMessageDialog(null, "【" + tableRow.getName() + "】主分支不存在！", "错误 ", 0);
+            return false;
+        }
+        if (CollectionUtils.isEmpty(branches)) {
+            JOptionPane.showMessageDialog(null, "【" + tableRow.getName() + "】项目分支不存在！", "错误 ", 0);
+            return false;
+        }
+        return true;
     }
 
     @Override

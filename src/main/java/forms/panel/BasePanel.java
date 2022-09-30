@@ -8,6 +8,8 @@ import forms.table.button.CustomButtonRenderer;
 import forms.table.model.CustomTableModel;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.gitlab4j.api.models.Branch;
+import utils.GitLabApiUtil;
 
 import javax.swing.*;
 import javax.swing.table.TableRowSorter;
@@ -21,7 +23,6 @@ import java.util.List;
  */
 public class BasePanel extends JPanel {
     protected Dimension dimension;
-
 
     public CommonJPanel createJTextFieldPanel(String label, String text) {
         CommonJPanel jPanel = new CommonJPanel();
@@ -70,10 +71,12 @@ public class BasePanel extends JPanel {
     }
 
     /**
-     * @param columnNames
+     * @param tableCells
      * @param data
      * @param customButtonRenderers
      * @param customButtonCellEditors
+     * @param panel
+     * @param dimension
      * @return
      */
     public CommonJPanel createTablePanel(List<TableCell> tableCells, List<List<Object>> data, List<CustomButtonRenderer> customButtonRenderers, List<CustomButtonCellCellEditor> customButtonCellEditors, RightPanel panel, Dimension dimension) {
@@ -93,6 +96,34 @@ public class BasePanel extends JPanel {
         Dimension tabSize = new Dimension((int) Math.ceil(dimension.getWidth() * scale), (int) Math.ceil(dimension.getHeight() * 0.9));
         System.out.println("table width:" + tabSize.getWidth() + "height:" + tabSize.getHeight());
         return tabSize;
+    }
+
+    /**
+     * @param projectId
+     */
+    public void setBranchComboBoxItemsWithApi(String projectId) {
+        List<Branch> branches = GitLabApiUtil.getBranchByProjectId(projectId);
+        setBranchComboBoxItems(branches);
+    }
+
+    /**
+     * @param items
+     */
+    protected void setBranchComboBoxItems(Object... items) {
+    }
+
+    /**
+     * @param branches
+     */
+    public void setBranchComboBoxItems(List<Branch> branches) {
+        if (CollectionUtils.isNotEmpty(branches)) {
+            Object[] bArr = new Object[branches.size()];
+            for (int i = 0; i < branches.size(); i++) {
+                Branch branch = branches.get(i);
+                bArr[i] = branch.getName();
+            }
+            setBranchComboBoxItems(bArr);
+        }
     }
 
     /**

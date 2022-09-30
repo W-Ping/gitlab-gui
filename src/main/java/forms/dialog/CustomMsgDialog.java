@@ -72,9 +72,7 @@ public class CustomMsgDialog extends JDialog implements WindowListener {
     }
 
     /**
-     * @param eventEnum
-     * @param e
-     * @param <E>
+     * @param eventList
      */
     public void register(AbstractCustomMsgDialogEvent... eventList) {
         if (eventList != null) {

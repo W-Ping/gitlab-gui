@@ -3,9 +3,9 @@ package forms.panel;
 import actions.QueryProjectAction;
 import forms.table.CustomTable;
 import forms.table.TableCell;
+import forms.table.TableLabel;
 import forms.table.button.CustomButtonCellCellEditor;
 import forms.table.button.CustomButtonRenderer;
-import forms.table.button.TableCustomButton;
 
 import javax.swing.*;
 import java.awt.*;
@@ -29,8 +29,9 @@ public class LeftPanel extends BasePanel {
         this.setSize(dimension = new Dimension(620, 500));
         this.rightPanel = rightPanel;
         this.frame = jFrame;
-        CustomButtonRenderer customButtonRenderer = new CustomButtonRenderer("操作", getTableCustomButtons());
-        CustomButtonCellCellEditor customButtonCellEditor = new CustomButtonCellCellEditor("操作", getTableCustomButtons());
+        final List<TableLabel> tableCustomButtons = getTableCustomButtons();
+        CustomButtonRenderer customButtonRenderer = new CustomButtonRenderer("操作", tableCustomButtons);
+        CustomButtonCellCellEditor customButtonCellEditor = new CustomButtonCellCellEditor("操作",  getTableCustomButtons());
         CommonJPanel tablePanel = createTablePanel(setHeaderTableCell(), null, Arrays.asList(customButtonRenderer), Arrays.asList(customButtonCellEditor), rightPanel, dimension);
         CommonJPanel txtPanel = createJTextFieldPanel("项目名称：", "");
         CommonJPanel jButtonPanel = createJButtonPanel(queryBranchJButton(txtPanel, tablePanel));
@@ -40,10 +41,10 @@ public class LeftPanel extends BasePanel {
         setVisible(true);
     }
 
-    private List<TableCustomButton> getTableCustomButtons() {
-        List<TableCustomButton> list = new ArrayList<>();
-        TableCustomButton btn1 = new TableCustomButton("createHotfix", "创建分支", rightPanel);
-        TableCustomButton btn2 = new TableCustomButton("deleteHotfix", "删除分支", rightPanel);
+    private List<TableLabel> getTableCustomButtons() {
+        List<TableLabel> list = new ArrayList<>();
+        TableLabel btn1 = new TableLabel("createHotfix", "创建分支", rightPanel, Color.BLUE);
+        TableLabel btn2 = new TableLabel("deleteHotfix", "删除分支", rightPanel, Color.RED);
         list.add(btn1);
         list.add(btn2);
         return list;
@@ -58,8 +59,8 @@ public class LeftPanel extends BasePanel {
         TableCell h2 = new TableCell("项目名称", "Name", 20);
         TableCell h3 = new TableCell("说明", "Description", 20, true);
 //        TableCell h4 = new TableCell("最新更时间", "LastActivityAt", 20);
-        TableCell h5 = new TableCell("代码地址", "HttpUrlToRepo", 30);
-        TableCell h6 = new TableCell("操作", "Id", 60, 30);
+        TableCell h5 = new TableCell("代码地址", "HttpUrlToRepo", 70);
+        TableCell h6 = new TableCell("操作", "Id", 30,30);
 //        tableCells.add(h1);
         tableCells.add(h2);
         tableCells.add(h3);

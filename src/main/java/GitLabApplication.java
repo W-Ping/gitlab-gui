@@ -10,6 +10,7 @@ public class GitLabApplication {
      * @param args
      */
     public static void main(String[] args) {
+
         GitLabFrame gitLabFrame = new GitLabFrame("GitLab管理");
         gitLabFrame.init();
     }

@@ -2,16 +2,18 @@ package service;
 
 import config.AccountActionType;
 import config.CommonConstants;
+import forms.dialog.GitLabConfigDialog;
 import forms.dialog.event.AbstractCustomMsgDialogEvent;
 import forms.dialog.event.EventEnum;
 import org.gitlab4j.api.GitLabApiException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import pojo.LoginInfo;
 import pojo.ResponseResult;
 import utils.GitLabApiUtil;
-import utils.PropertiesUtil;
+import utils.SQLiteUtil;
 
 import java.io.IOException;
-import java.util.Optional;
 
 /**
  * @author liu_wp
@@ -20,6 +22,7 @@ import java.util.Optional;
  */
 public class LoginService extends AbstractCustomMsgDialogEvent {
     public LoginInfo loginInfo;
+    private static final Logger log = LoggerFactory.getLogger(GitLabConfigDialog.class);
 
     public LoginService(EventEnum eventEnum, final LoginInfo loginInfo) {
         super(eventEnum);
@@ -28,9 +31,7 @@ public class LoginService extends AbstractCustomMsgDialogEvent {
 
     @Override
     public ResponseResult handle() {
-        System.out.println("CustomMsgDialogOpenedEvent");
-        ResponseResult responseResult = login(loginInfo, true);
-        return responseResult;
+        return login(loginInfo, true);
     }
 
     /**
@@ -38,13 +39,13 @@ public class LoginService extends AbstractCustomMsgDialogEvent {
      */
     public static ResponseResult logout(LoginInfo loginInfo) {
         try {
-            loginInfo = Optional.ofNullable(loginInfo).orElse(new LoginInfo());
-            loginInfo.setLoginPwd("");
-            loginInfo.setActionType(AccountActionType.LOGOUT.getType());
-            if (PropertiesUtil.setPropertyValue(CommonConstants.LOGIN_FILE, loginInfo, true)) {
-                return ResponseResult.success();
+            if (loginInfo != null) {
+                log.info("{}退出登录", loginInfo.getLoginName());
             }
+            CommonConstants.GLOBE_LOGIN_INFO = null;
+            return ResponseResult.success();
         } catch (Exception e) {
+            log.error("注销失败{}", e.getMessage());
         }
         return ResponseResult.fail("注销失败");
     }
@@ -53,17 +54,14 @@ public class LoginService extends AbstractCustomMsgDialogEvent {
      *
      */
     public static void restart() {
-        Runtime.getRuntime().addShutdownHook(new Thread() {
-            @Override
-            public void run() {
-                ProcessBuilder processBuilder = new ProcessBuilder("java", "-jar", CommonConstants.APPLICATION_JAR);
-                try {
-                    processBuilder.start();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            ProcessBuilder processBuilder = new ProcessBuilder("java", "-jar", CommonConstants.APPLICATION_JAR);
+            try {
+                processBuilder.start();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-        });
+        }));
         System.exit(0);
     }
 
@@ -77,10 +75,11 @@ public class LoginService extends AbstractCustomMsgDialogEvent {
                 boolean result = GitLabApiUtil.autoGitLabLogin(loginInfo);
                 if (updateFile) {
                     loginInfo.setActionType(AccountActionType.DEFAULT.getType());
-                    result = PropertiesUtil.setPropertyValue(CommonConstants.LOGIN_FILE, loginInfo, true);
+                    result = SQLiteUtil.insertOrUpdate(loginInfo);
+//                    result = PropertiesUtil.setPropertyValue(CommonConstants.LOGIN_FILE, loginInfo, true);
                 }
                 if (result) {
-                    return ResponseResult.success();
+                    return ResponseResult.success(loginInfo);
                 }
             } catch (GitLabApiException e) {
                 int httpStatus = e.getHttpStatus();

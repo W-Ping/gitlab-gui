@@ -1,20 +1,19 @@
 package forms;
 
-import config.AccountActionType;
+import config.CommonConstants;
+import forms.dialog.GitlabBranchesDialog;
 import forms.dialog.LoginDialog;
 import forms.dialog.event.EventEnum;
 import forms.panel.CommonJPanel;
 import forms.panel.LeftPanel;
 import forms.panel.RightPanel;
-import org.apache.commons.lang3.StringUtils;
 import org.gitlab4j.api.models.User;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import pojo.LoginInfo;
 import pojo.ResponseResult;
 import service.LoginService;
-import utils.GitLabApiUtil;
-import utils.JSONUtil;
-import utils.MessageDialogUtil;
-import utils.SystemUtil;
+import utils.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -29,7 +28,7 @@ import java.awt.event.WindowEvent;
  * @see
  */
 public class GitLabFrame extends JFrame {
-    private LoginInfo loginInfo;
+    private static final Logger log = LoggerFactory.getLogger(GitlabBranchesDialog.class);
 
     public GitLabFrame(String title) {
         super(title);
@@ -38,19 +37,19 @@ public class GitLabFrame extends JFrame {
     }
 
     public void init() {
-        loginInfo = GitLabApiUtil.getDefaultLogin();
-        if (loginInfo != null && StringUtils.isNotBlank(loginInfo.getLoginName())
-                && !AccountActionType.LOGOUT.getType().equals(loginInfo.getActionType())) {
+        SQLiteUtil.init(false);
+        LoginInfo loginInfo = GitLabApiUtil.getDefaultLogin();
+        if (loginInfo.loginIsEffective()) {
             LoginService loginService = new LoginService(EventEnum.windowOpened, loginInfo);
             MessageDialogUtil.showModalDialog("【" + loginInfo.getLoginName() + "】登录中...", this, loginService);
             ResponseResult handleResult = loginService.getHandleResult();
             if (!ResponseResult.isSuccess(handleResult)) {
                 LoginDialog loginDialog = MessageDialogUtil.createLoginDialog(this);
-                loginInfo = loginDialog.getLoginInfo(false);
+//                loginInfo = loginDialog.getLoginInfo(false);
             }
         } else {
             LoginDialog loginDialog = MessageDialogUtil.createLoginDialog(this);
-            loginInfo = loginDialog.getLoginInfo(false);
+//            loginInfo = loginDialog.getLoginInfo(false);
         }
         JMenuBar menuBar = new JMenuBar();
         JMenu jMenu1 = new JMenu("设置(S)");
@@ -106,9 +105,9 @@ public class GitLabFrame extends JFrame {
     protected void processWindowEvent(WindowEvent e) {
         if (e.getID() == WindowEvent.WINDOW_CLOSING) {
             if (JOptionPane.showConfirmDialog(this, "确认退出程序？", "确认", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+                CommonConstants.GLOBE_LOGIN_INFO = null;
                 System.exit(0);
 //                setExtendedState(JFrame.ICONIFIED);
-            } else {
             }
         } else {
             super.processWindowEvent(e);
@@ -116,7 +115,7 @@ public class GitLabFrame extends JFrame {
     }
 
     public void logout(ActionEvent event) {
-        ResponseResult responseResult = LoginService.logout(loginInfo);
+        ResponseResult responseResult = LoginService.logout(GitLabApiUtil.getDefaultLogin());
         if (ResponseResult.isSuccess(responseResult)) {
             LoginService.restart();
         }
@@ -124,12 +123,12 @@ public class GitLabFrame extends JFrame {
     }
 
     public void config(ActionEvent event) {
-        MessageDialogUtil.showGitLabConfigDialog(this, loginInfo);
+        MessageDialogUtil.showGitLabConfigDialog(this, GitLabApiUtil.getDefaultLogin());
     }
 
     public void user(ActionEvent event) {
         User currentUser = GitLabApiUtil.getCurrentUser();
-        System.out.println(JSONUtil.Object2JSON(currentUser));
+        log.info("currentUser:{}", JSONUtil.Object2JSON(currentUser));
         MessageDialogUtil.createUserDialog(this, currentUser);
     }
 
@@ -137,12 +136,13 @@ public class GitLabFrame extends JFrame {
      * @return
      */
     private CommonJPanel showBottomPanel() {
-        Font helvetica = new Font("Helvetica", Font.PLAIN, 12);
+        final LoginInfo loginInfo = GitLabApiUtil.getDefaultLogin();
+//        Font helvetica = new Font("Helvetica", Font.PLAIN, 12);
         CommonJPanel bottom = new CommonJPanel();
         JLabel j1 = new JLabel("GitLab 地址：");
-        j1.setFont(helvetica);
+        j1.setFont(CommonConstants.DEFAULT_FONT);
         JLabel j2 = new JLabel();
-        j2.setFont(helvetica);
+        j2.setFont(CommonConstants.DEFAULT_FONT);
         String gitlabHostUrl = loginInfo.getGitlabHostUrl();
         j2.setText("<html><a href='" + gitlabHostUrl + "'>" + gitlabHostUrl + "</a></html>");
         j2.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
@@ -153,9 +153,9 @@ public class GitLabFrame extends JFrame {
             }
         });
         JLabel j3 = new JLabel("  用户：");
-        j3.setFont(helvetica);
+        j3.setFont(CommonConstants.DEFAULT_FONT);
         JLabel j4 = new JLabel(loginInfo.getLoginName());
-        j4.setFont(helvetica);
+        j4.setFont(CommonConstants.DEFAULT_FONT);
         bottom.add(j1);
         bottom.add(j2);
         bottom.add(j3);
