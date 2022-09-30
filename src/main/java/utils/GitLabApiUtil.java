@@ -149,9 +149,8 @@ public class GitLabApiUtil {
     public static List<Branch> getBranchByProjectId(String projectId) {
         try {
             List<Branch> branches = gitLabApiReq.getRepositoryApi().getBranches(projectId);
-
             return branches;
-        } catch (GitLabApiException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return null;

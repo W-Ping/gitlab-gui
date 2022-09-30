@@ -55,8 +55,8 @@ public class DeleteBranchPanel extends BasePanel {
                     JOptionPane.YES_NO_OPTION);
             if (res == JOptionPane.YES_OPTION) {
                 if (GitLabApiUtil.deleteBranch(tableRow.getId().toString(), branchComboBox.getSelectedItem().toString())) {
-                    setBranchComboBoxItemsWithApi(tableRow.getId().toString());
                     JOptionPane.showMessageDialog(null, "【" + selectValue + "】删除成功！", "成功", JOptionPane.PLAIN_MESSAGE);
+                    setBranchComboBoxItemsWithApi(tableRow.getId().toString());
                 } else {
                     JOptionPane.showMessageDialog(null, "【" + selectValue + "】删除失败！", "错误 ", 0);
                 }
@@ -97,6 +97,7 @@ public class DeleteBranchPanel extends BasePanel {
             }
         }
         this.setVisible(true);
+        this.updateUI();
     }
 
     /**

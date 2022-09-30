@@ -94,7 +94,6 @@ public class BasePanel extends JPanel {
 
     public Dimension tableSize(Dimension dimension, double scale) {
         Dimension tabSize = new Dimension((int) Math.ceil(dimension.getWidth() * scale), (int) Math.ceil(dimension.getHeight() * 0.9));
-        System.out.println("table width:" + tabSize.getWidth() + "height:" + tabSize.getHeight());
         return tabSize;
     }
 
